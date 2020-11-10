@@ -789,6 +789,32 @@ TEST_CASE("RISCV RV128 unshfl")
     }
 }
 
+TEST_CASE("RISCV RV32 shfli")
+{
+    CHECK( RISCVInstr<uint32>(0x08081593).get_disasm() == "shfli $a1, $a6, 0"); 
+    CHECK( RISCVInstr<uint32>(0x08F81593).get_disasm() == "shfli $a1, $a6, 15");
+    std::vector<std::pair<TestData<uint32>, uint32>> cases {
+        {TestData<uint32>( 0x12345678, 0x0, 0x12563478), 0x08},
+    };
+    for (std::size_t i = 0; i < cases.size(); i++) {
+        INFO( "Iteration: " << i);
+	cases[i].first.make_test("shfli", cases[i].second);
+    }
+}
+
+TEST_CASE("RISCV RV64 shfli")
+{
+    CHECK( RISCVInstr<uint32>(0x09F81593).get_disasm() == "shfli $a1, $a6, 31");
+    std::vector<std::pair<TestData<uint64>, uint64>> cases {
+        {TestData<uint64>( 0x0123456789abcdef, 0x0, 0x021346578a9bcedf), 0x04},
+    };
+    for (std::size_t i = 0; i < cases.size(); i++) {
+        INFO( "Iteration: " << i);
+        cases[i].first.make_test("shfli", cases[i].second);
+    }
+
+}
+
 TEST_CASE("RISCV ecall")
 {
     RISCVInstr<uint32> instr( "ecall", 0);
